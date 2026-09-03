@@ -12,6 +12,12 @@
 
 Production-grade deployment of a **Node.js application** on a **Kubernetes cluster** (1 Master + 2 Workers) on **VMware** infrastructure with **Docker**, **Helm**, and **Ingress**.
 
+### 🎯 **What This Project Does**
+- Deploys a Node.js Express API with health checks
+- Runs on a 3-node Kubernetes cluster
+- Auto-heals with Liveness & Readiness probes
+- Scales with 2 replicas for high availability
+
 ---
 
 ## 🛠️ **Technology Stack**
@@ -40,15 +46,25 @@ Production-grade deployment of a **Node.js application** on a **Kubernetes clust
 
 ## 🚀 **Quick Deployment**
 
+### Prerequisites
+- Kubernetes cluster (1 Master + 2 Workers)
+- Helm installed
+- kubectl configured
+
+### Step 1: Clone Repository
 ```bash
-# 1. Clone repository
 sudo mkdir -p /opt/apps && sudo chown -R $USER:$USER /opt/apps
 cd /opt/apps
 git clone https://github.com/mazid-dev/nodejs-k8s-app.git
 cd nodejs-k8s-app
+```
 
-# 2. Deploy with Helm
+### Step 2: Deploy with Helm
+```bash
+# Create namespace
 kubectl create namespace nodejs
+
+# Deploy application
 helm install nodejs-app ./helm-chart/nodejs-app \
   --namespace nodejs \
   --set persistence.enabled=false \
@@ -56,21 +72,54 @@ helm install nodejs-app ./helm-chart/nodejs-app \
   --set image.tag=v1.0.0
 ```
 
+### Step 3: Verify Deployment
+```bash
+kubectl get pods -n nodejs -o wide
+kubectl get svc -n nodejs
+kubectl get ingress -n nodejs
+```
+
 ---
 
-## 🧪 **Testing**
+## 🧪 **Testing Your Application**
 
+### Access via Port Forward
 ```bash
-# Port Forward
+# Forward port
 kubectl port-forward -n nodejs service/nodejs-app-service 3000:80 &
 
 # Health Check
 curl http://localhost:3000/health
-# {"status":"ok","uptime":123.45,"timestamp":"2026-09-03T07:05:33.678Z"}
+```
 
-# Application Info
-curl http://localhost:3000/
-# {"message":"Welcome to Node.js Kubernetes App","app":"nodejs-k8s-app",...}
+**Expected Output:**
+```json
+{
+  "status": "ok",
+  "uptime": 123.45,
+  "timestamp": "2026-09-03T07:05:33.678Z"
+}
+```
+
+### Access via Ingress
+```bash
+# Add to /etc/hosts
+echo "192.168.130.129 nodejs-app.local" | sudo tee -a /etc/hosts
+
+# Test
+curl http://nodejs-app.local/health
+```
+
+### Access via NodePort
+```bash
+# Change service type
+kubectl patch svc nodejs-app-service -n nodejs -p '{"spec":{"type":"NodePort"}}'
+
+# Get NodePort
+kubectl get svc -n nodejs
+
+# Access
+curl http://192.168.130.130:30001/health
 ```
 
 ---
@@ -84,38 +133,74 @@ kubectl get svc -n nodejs
 kubectl get ingress -n nodejs
 ```
 
-**Current Status:** ✅ All pods running, application healthy
+**✅ Current Status: All pods running, application healthy**
 
 ---
 
-## 📝 **Quick Commands**
+## 📝 **Quick Commands Reference**
 
 | Action | Command |
 |--------|---------|
-| Check Pods | `kubectl get pods -n nodejs -o wide` |
-| View Logs | `kubectl logs -f -n nodejs deployment/nodejs-app` |
-| Port Forward | `kubectl port-forward -n nodejs service/nodejs-app-service 3000:80` |
-| Health Check | `curl http://localhost:3000/health` |
+| **Check Pods** | `kubectl get pods -n nodejs -o wide` |
+| **View Logs** | `kubectl logs -f -n nodejs deployment/nodejs-app` |
+| **Port Forward** | `kubectl port-forward -n nodejs service/nodejs-app-service 3000:80` |
+| **Health Check** | `curl http://localhost:3000/health` |
+| **Application Info** | `curl http://localhost:3000/` |
+| **Describe Pod** | `kubectl describe pod -n nodejs <pod-name>` |
+| **View Events** | `kubectl get events -n nodejs --sort-by='.lastTimestamp'` |
 
 ---
 
-## 🔧 **Troubleshooting**
+## 🔧 **Troubleshooting Guide**
 
 | Issue | Solution |
 |-------|----------|
-| ImagePullBackOff | Use `mdmazidhossain77/nodejs-k8s-app` |
-| Port Forward Timeout | `sudo ufw allow 10250/tcp` on workers |
-| Nodes NotReady | `sudo swapoff -a` |
+| **ImagePullBackOff** | Use correct repository: `mdmazidhossain77/nodejs-k8s-app` |
+| **Port Forward Timeout** | Allow kubelet port: `sudo ufw allow 10250/tcp` on workers |
+| **Node NotReady** | Disable swap: `sudo swapoff -a` |
+| **Ingress 404** | Check Ingress Controller: `kubectl get pods -n ingress-nginx` |
+| **Pod CrashLoopBackOff** | Check logs: `kubectl logs -n nodejs <pod-name>` |
 
 ---
 
-## 📞 **Contact**
+## 🔒 **Security Features**
 
-- **Repository:** [github.com/mazid-dev/nodejs-k8s-app](https://github.com/mazid-dev/nodejs-k8s-app)
-- **Docker Image:** [hub.docker.com/r/mdmazidhossain77/nodejs-k8s-app](https://hub.docker.com/r/mdmazidhossain77/nodejs-k8s-app)
+- ✅ **Non-root User** - Container runs as `nodejs` user
+- ✅ **Resource Limits** - CPU/Memory constraints
+- ✅ **Health Checks** - Auto-recovery on failure
+- ✅ **Secrets** - Managed via Kubernetes Secrets
+- ✅ **Network Policy** - Calico CNI for security
 
 ---
 
-## 🎉 **Project Status: Production Ready ✅**
+## 📈 **Performance Metrics**
 
-**Deployed:** September 3, 2026
+| Metric | Value |
+|--------|-------|
+| **Image Size** | 45.6 MB |
+| **Memory Usage** | 128-256 MiB per pod |
+| **CPU Usage** | 100-200m per pod |
+| **Replicas** | 2 (High Availability) |
+
+
+---
+
+## 📞 **Resources**
+
+- **GitHub:** [github.com/mazid-dev/nodejs-k8s-app](https://github.com/mazid-dev/nodejs-k8s-app)
+- **Docker Hub:** [hub.docker.com/r/mdmazidhossain77/nodejs-k8s-app](https://hub.docker.com/r/mdmazidhossain77/nodejs-k8s-app)
+- **Issues:** [GitHub Issues](https://github.com/mazid-dev/nodejs-k8s-app/issues)
+
+---
+
+## 🎉 **Project Status**
+
+| Detail | Value |
+|--------|-------|
+| **Status** | ✅ Production Ready |
+| **Deployed** | September 3, 2026 |
+| **Health** | ✅ All pods running |
+
+---
+
+**🚀 Successfully deployed a production-grade Node.js application on Kubernetes with health checks, ingress, and high availability!**
