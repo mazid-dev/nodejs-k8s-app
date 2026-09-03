@@ -1,0 +1,41 @@
+replicaCount: 2
+
+image:
+  repository: mdmazidhossain77/nodejs-k8s-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+namespace: nodejs
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  host: nodejs-app.local
+  path: /
+
+persistence:
+  enabled: false
+
+configmap:
+  NODE_ENV: production
+  APP_NAME: nodejs-k8s-app
+  APP_VERSION: "1.0.0"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
