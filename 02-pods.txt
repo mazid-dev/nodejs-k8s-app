@@ -1,0 +1,4 @@
+NAME                          READY   STATUS              RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+nodejs-app-5dc59c8c7d-x54jc   1/1     Running             0          9m48s   192.168.179.95    server2   <none>           <none>
+nodejs-app-86b5455f5b-9lp6m   0/1     ContainerCreating   0          6m13s   <none>            server2   <none>           <none>
+nodejs-app-86b5455f5b-ndrdm   1/1     Running             0          6m33s   192.168.141.230   server3   <none>           <none>
