@@ -1,0 +1,2 @@
+NAME         REFERENCE               TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+nodejs-app   Deployment/nodejs-app   cpu: <unknown>/50%   2         5         2          6m7s

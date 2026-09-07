@@ -1,0 +1,2 @@
+NAME                 TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+nodejs-app-service   NodePort   10.101.37.213   <none>        80:30945/TCP   133m

@@ -1,0 +1,72 @@
+# ==================== BASIC SETTINGS ====================
+replicaCount: 2
+
+image:
+  repository: mdmazidhossain77/nodejs-k8s-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+namespace: nodejs
+
+# ==================== SERVICE ====================
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+# ==================== INGRESS ====================
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: nodejs-app.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enabled: false
+    secretName: nodejs-app-tls
+
+# ==================== STORAGE ====================
+persistence:
+  enabled: false
+  storageClass: "local-path"
+  size: 5Gi
+  accessMode: ReadWriteOnce
+
+# ==================== CONFIGMAP ====================
+configmap:
+  NODE_ENV: production
+  APP_NAME: nodejs-k8s-app
+  APP_VERSION: "1.0.0"
+
+# ==================== SECRETS ====================
+secret:
+  enabled: false
+  type: Opaque
+  data: {}
+
+# ==================== RESOURCES ====================
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# ==================== HPA (Auto-scaling) ====================
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 80
+
+# ==================== NETWORK POLICY ====================
+networkPolicy:
+  enabled: false
+
+# ==================== SERVICE MONITOR ====================
+serviceMonitor:
+  enabled: false

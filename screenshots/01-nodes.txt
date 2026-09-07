@@ -1,0 +1,4 @@
+NAME      STATUS   ROLES           AGE    VERSION    INTERNAL-IP       EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
+server1   Ready    control-plane   167m   v1.30.14   192.168.130.129   <none>        Ubuntu 24.04.4 LTS   7.0.0-30-generic   containerd://2.2.1
+server2   Ready    <none>          157m   v1.30.14   192.168.130.130   <none>        Ubuntu 24.04.4 LTS   7.0.0-30-generic   containerd://2.2.1
+server3   Ready    <none>          157m   v1.30.14   192.168.130.131   <none>        Ubuntu 24.04.4 LTS   7.0.0-30-generic   containerd://2.2.1

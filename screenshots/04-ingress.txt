@@ -1,0 +1,2 @@
+NAME                 CLASS   HOSTS              ADDRESS          PORTS   AGE
+nodejs-app-ingress   nginx   nodejs-app.local   10.111.116.198   80      2m55s
